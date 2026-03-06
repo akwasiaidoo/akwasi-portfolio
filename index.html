@@ -627,9 +627,68 @@ footer{
   .tool-dot.filled.green { background: var(--green); }
   @media(max-width: 768px) { .tools-grid { grid-template-columns: repeat(2,1fr); } }
   @media(max-width: 480px) { .tools-grid { grid-template-columns: repeat(2,1fr); } }
+
+/* LOADER */
+#loader{
+  position:fixed;inset:0;z-index:99999;
+  background:#080e1a;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  transition:opacity 0.6s ease, visibility 0.6s ease;
+}
+#loader.hide{opacity:0;visibility:hidden;pointer-events:none;}
+.loader-name{
+  font-family:'Barlow Condensed',sans-serif;
+  font-size:clamp(2.8rem,8vw,6rem);
+  font-weight:800;
+  letter-spacing:0.05em;
+  text-transform:uppercase;
+  color:#F0F4FF;
+  line-height:1;
+  margin-bottom:1.2rem;
+}
+.loader-name span{color:var(--accent,#00E5FF);}
+.loader-line{
+  font-family:'JetBrains Mono','Courier New',monospace;
+  font-size:0.8rem;
+  letter-spacing:0.1em;
+  color:rgba(0,229,255,0.6);
+  display:flex;align-items:center;gap:0.5rem;
+  min-height:1.2em;
+}
+.loader-dot{
+  width:6px;height:6px;border-radius:50%;
+  background:var(--accent,#00E5FF);
+  animation:blink 1s step-end infinite;
+}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+.loader-bar-wrap{
+  width:200px;height:1px;
+  background:rgba(0,229,255,0.15);
+  margin-top:2rem;
+  overflow:hidden;
+}
+.loader-bar{
+  height:100%;width:0%;
+  background:var(--accent,#00E5FF);
+  transition:width 0.05s linear;
+  box-shadow:0 0 8px rgba(0,229,255,0.8);
+}
 </style>
 </head>
 <body>
+
+<!-- LOADER -->
+<div id="loader">
+  <div class="loader-name">AKWASI<span>.</span>ME</div>
+  <div class="loader-line">
+    <div class="loader-dot"></div>
+    <span id="loaderText">Booting portfolio...</span>
+  </div>
+  <div class="loader-bar-wrap">
+    <div class="loader-bar" id="loaderBar"></div>
+  </div>
+</div>
 
 <div class="cursor" id="cursor"></div>
 <div class="cursor-ring" id="cursorRing"></div>
@@ -1358,6 +1417,28 @@ footer{
   var u='work';var d='akwasi.me';
   var el=document.getElementById('emailLink');
   if(el){ el.href='mailto:'+u+'@'+d; }
+})();
+
+// LOADER
+(function(){
+  const loader = document.getElementById('loader');
+  const bar    = document.getElementById('loaderBar');
+  const txt    = document.getElementById('loaderText');
+  const lines  = ['Booting portfolio...','Loading experience...','Compiling projects...','Initialising systems...','Ready.'];
+  let progress = 0, lineIdx = 0;
+  const iv = setInterval(() => {
+    progress += Math.random() * 22 + 8;
+    if(progress > 100) progress = 100;
+    bar.style.width = progress + '%';
+    if(lineIdx < lines.length - 1 && progress > (lineIdx + 1) * 20){
+      lineIdx++;
+      txt.textContent = lines[lineIdx];
+    }
+    if(progress >= 100){
+      clearInterval(iv);
+      setTimeout(() => { loader.classList.add('hide'); }, 500);
+    }
+  }, 200);
 })();
 
 </script>
